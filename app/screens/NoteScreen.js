@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -16,10 +16,15 @@ import NoteInputModal from "../components/NoteInputModel";
 import Note from "../components/Note";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNotes } from "../contexts/NoteProvider";
+import NotFound from "../components/NoteFound";
+import { Fonts } from "../misc/fonts";
 
 const NoteScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const { notes, setNotes } = useNotes();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [resultNotFound, setResultNotFound] = useState(false);
+
+  const { notes, setNotes, findNotes } = useNotes();
 
   const handleOnSubmit = async (title, desc) => {
     const note = { id: Date.now(), title, desc, time: Date.now() };
@@ -32,25 +37,62 @@ const NoteScreen = ({ navigation }) => {
     navigation.navigate("NoteDelail", { note });
   };
 
+  const handleOnSearchInput = async (text) => {
+    setSearchQuery(text);
+    if (!text.trim()) {
+      setSearchQuery("");
+      setResultNotFound(false);
+      return await findNotes();
+    }
+    const filteredNotes = notes.filter((note) => {
+      if (note.title.toLowerCase().includes(text.toLowerCase())) {
+        return note;
+      }
+    });
+
+    if (filteredNotes.length) {
+      setNotes([...filteredNotes]);
+    } else {
+      setResultNotFound(true);
+    }
+  };
+
+  const handleOnClear = async () => {
+    setSearchQuery("");
+    setResultNotFound(false);
+    await findNotes();
+  };
+
   return (
     <>
       <StatusBar hidden={true} />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={styles.container}>
           <Text style={styles.header}>Заметки</Text>
-          {notes.length ? <SearchBar /> : null}
-          <FlatList
-            data={notes}
-            numColumns={2}
-            columnWrapperStyle={{
-              justifyContent: "space-between",
-              marginBottom: 15,
-            }}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <Note onPress={() => openNote(item)} item={item} />
-            )}
-          />
+          {notes.length ? (
+            <SearchBar
+              value={searchQuery}
+              onChangeText={handleOnSearchInput}
+              onClear={handleOnClear}
+            />
+          ) : null}
+
+          {resultNotFound ? (
+            <NotFound />
+          ) : (
+            <FlatList
+              data={notes}
+              numColumns={2}
+              columnWrapperStyle={{
+                justifyContent: "space-between",
+                marginBottom: 15,
+              }}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <Note onPress={() => openNote(item)} item={item} />
+              )}
+            />
+          )}
           {!notes.length ? (
             <View
               style={[
@@ -86,12 +128,13 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    fontSize: 25,
+    fontSize: 30,
     fontWeight: "bold",
-    color: "#fff",
+    color: colors.LIGHT,
     marginBottom: 20,
     marginTop: 10,
     alignSelf: "center",
+    fontFamily: Fonts.RobotoFlex,
   },
 
   emptyHeader: {
@@ -100,13 +143,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: colors.LIGHT,
     opacity: 0.2,
+    fontFamily: Fonts.RobotoFlex,
   },
 
   emptyHeaderContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    /* Изменить цвет фона */
     zIndex: -1,
   },
 

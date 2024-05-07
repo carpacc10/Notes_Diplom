@@ -1,16 +1,17 @@
 import {
   StyleSheet,
-  Text,
   View,
   TextInput,
   Modal,
   StatusBar,
   TouchableNativeFeedback,
   Keyboard,
+  Dimensions,
 } from "react-native";
 import colors from "../misc/colors";
 import { useEffect, useState } from "react";
 import RoundIconBtn from "./RoundIconBtn";
+import { Fonts } from "../misc/fonts";
 
 const NoteInputModal = ({ visible, onClose, onSubmit, note, isEdit }) => {
   const [title, setTitle] = useState("");
@@ -58,7 +59,7 @@ const NoteInputModal = ({ visible, onClose, onSubmit, note, isEdit }) => {
     <>
       <StatusBar hidden />
 
-      <Modal visible={visible} animationType="fade">
+      <Modal visible={visible} animationType="slide">
         <View style={styles.conteiner}>
           <TextInput
             value={title}
@@ -76,12 +77,12 @@ const NoteInputModal = ({ visible, onClose, onSubmit, note, isEdit }) => {
             onChangeText={(text) => handleOnChacgeText(text, "desc")}
             textAlignVertical="top"
           />
-          <View style={styles.btnContainer}>
-            <RoundIconBtn antIconName="check" onPress={handleSubmit} />
-            {title.trim() || desc.trim() ? (
-              <RoundIconBtn antIconName="close" onPress={closeModal} />
-            ) : null}
-          </View>
+        </View>
+        <View style={styles.btnContainer}>
+          <RoundIconBtn antIconName="check" onPress={handleSubmit} />
+          {title.trim() || desc.trim() ? (
+            <RoundIconBtn antIconName="close" onPress={closeModal} />
+          ) : null}
         </View>
         <TouchableNativeFeedback onPress={handleModalClose}>
           <View style={[styles.modalBG, StyleSheet.absoluteFillObject]} />
@@ -91,6 +92,8 @@ const NoteInputModal = ({ visible, onClose, onSubmit, note, isEdit }) => {
   );
 };
 
+const height = Dimensions.get("window").height;
+
 const styles = StyleSheet.create({
   conteiner: {
     paddingHorizontal: 20,
@@ -99,20 +102,23 @@ const styles = StyleSheet.create({
 
   input: {
     color: colors.LIGHT,
-    fontSize: 20,
+    fontFamily: Fonts.RobotoFlex,
   },
 
   title: {
-    height: 50,
+    height: height / 10,
     marginBottom: 15,
     fontWeight: "bold",
     borderBottomWidth: 2,
     borderBottomColor: colors.PRIMARY,
+    fontSize: 25,
+    fontFamily: Fonts.RobotoFlex,
   },
 
   desc: {
-    height: "80%",
-    /* сделать ширину 100% и добавить абослютное позиционирование для кнопок. так же изменить размер шрифта самой заметки и естественно добавить другой шрифт*/
+    height: (height / 100) * 90,
+    fontSize: 18,
+    fontFamily: Fonts.RobotoFlex,
   },
 
   modalBG: {
@@ -122,10 +128,11 @@ const styles = StyleSheet.create({
   },
 
   btnContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    paddingVertical: 15,
+    position: "absolute",
     gap: 15,
+    bottom: 25,
+    right: 25,
+    zIndex: 1,
   },
 });
 

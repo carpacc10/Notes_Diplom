@@ -6,6 +6,7 @@ import RoundIconBtn from "./RoundIconBtn";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNotes } from "../contexts/NoteProvider";
 import NoteInputModal from "./NoteInputModel";
+import { Fonts } from "../misc/fonts";
 
 const formatDate = (ms) => {
   const date = new Date(ms);
@@ -48,7 +49,6 @@ const NoteDelail = (props) => {
         },
         {
           text: "Отмена",
-          onPress: () => console.log("отмена"),
         },
       ],
       {
@@ -86,6 +86,7 @@ const NoteDelail = (props) => {
 
   return (
     <>
+      <View style={[styles.ViewBG, StyleSheet.absoluteFillObject]} />
       <ScrollView
         contentContainerStyle={[styles.container, { paddingTop: headerHeight }]}
       >
@@ -125,19 +126,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor: colors.DARK,
   },
+
   title: {
-    fontSize: 30,
+    fontSize: 25,
     color: colors.LIGHT,
     fontWeight: "bold",
     borderBottomWidth: 2,
     borderBottomColor: colors.PRIMARY,
     marginBottom: 15,
+    fontFamily: Fonts.RobotoFlex,
   },
 
   desc: {
-    fontSize: 20,
+    fontSize: 18,
     color: colors.LIGHT,
     opacity: 0.6,
+    fontFamily: Fonts.RobotoFlex,
   },
 
   time: {
@@ -145,6 +149,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     textAlign: "right",
     fontSize: 12,
+    fontFamily: Fonts.RobotoFlex,
   },
 
   btnContainer: {
@@ -152,6 +157,12 @@ const styles = StyleSheet.create({
     right: 25,
     bottom: 25,
     gap: 15,
+  },
+
+  ViewBG: {
+    flex: 1,
+    zIndex: -1,
+    backgroundColor: colors.DARK,
   },
 });
 

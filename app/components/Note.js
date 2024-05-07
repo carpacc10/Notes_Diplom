@@ -1,12 +1,6 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, Dimensions, TouchableOpacity } from "react-native";
 import colors from "../misc/colors";
+import { Fonts } from "../misc/fonts";
 
 const Note = ({ item, onPress }) => {
   const { title, desc } = item;
@@ -15,7 +9,9 @@ const Note = ({ item, onPress }) => {
       <Text style={styles.title} numberOfLines={2}>
         {title}
       </Text>
-      <Text numberOfLines={3}>{desc}</Text>
+      <Text style={styles.desc} numberOfLines={3}>
+        {desc}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -24,7 +20,7 @@ const width = Dimensions.get("window").width - 40;
 
 const styles = StyleSheet.create({
   conteiner: {
-    backgroundColor: colors.PRIMARY,
+    backgroundColor: colors.DeepDARK,
     width: width / 2 - 10,
     padding: 8,
     borderRadius: 10,
@@ -32,8 +28,15 @@ const styles = StyleSheet.create({
 
   title: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 18,
     color: colors.LIGHT,
+    fontFamily: Fonts.RobotoFlex,
+  },
+
+  desc: {
+    color: colors.LIGHT,
+    opacity: 0.5,
+    fontFamily: Fonts.RobotoFlex,
   },
 });
 

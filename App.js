@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, SafeAreaView } from "react-native";
 import NoteScreen from "./app/screens/NoteScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
